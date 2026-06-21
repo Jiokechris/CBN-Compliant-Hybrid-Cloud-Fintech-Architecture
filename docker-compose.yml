@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  cbn_compliant_db:
+    image: postgres:15-alpine
+    container_name: local_tx_vault
+    restart: always
+    environment:
+      POSTGRES_USER: ledger_admin
+      POSTGRES_PASSWORD: HardenedPassword101!
+      POSTGRES_DB: domestic_transactions
+    ports:
+      - "5432:5432"
