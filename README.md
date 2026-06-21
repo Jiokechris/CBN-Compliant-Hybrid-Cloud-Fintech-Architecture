@@ -121,25 +121,31 @@ Database Ledger Validation (Executed locally on the Lagos terminal
 
 docker exec -it local_tx_vault psql -U ledger_admin -d domestic_transactions -c "SELECT * FROM tx_ledger;"
 
-Real-World Challenges Overcome
+## Real-World Challenges Overcome
 
 1. System Resource Constrains: Attempting to run a full enterprise emulator (local VM, database instances, and API servers) on a single personal laptop caused severe system lag. Resolution: Optimized the layout by offloading the API runtime layer to the AWS Cloud and containerizing the database via Docker, reducing local RAM usage significantly.
 
+
 2. Inbound Connectivity Blocks: Local ISP home Wi-Fi routers do not provide static public IP addresses and sit behind aggressive internal firewalls, preventing AWS from communicating with the database. Resolution: Leveraged a secure, transient reverse SSH handshake tunnel to provide a public mapping point without paying for complex corporate static networking.
+
 
 3. Authentication Lockouts: Handshaking with automated proxies initially required a password block due to a missing local host profile. Resolution: Generated dedicated 4000-bit RSA cryptographic identity signatures on the host machine to bypass interactive login prompts.
 
-  Future Roadmap & Next Improvements
+
+  ## Future Roadmap & Next Improvements
 Production Network Hardening: Replace temporary development reverse tunnels with a production-grade, open-source mesh network client like WireGuard or a dedicated site-to-site hardware VPN.
 
+
 Secrets Management Security: Migrate plaintext database credentials out of the application source code (index.js) and inject them dynamically at runtime using AWS Secrets Manager or system environmental variables (process.env).
+
 
 Connection Resilience & Failure Backups: Implement a queuing layer using RabbitMQ or an offline database buffer on AWS. If local network stability fluctuates in Lagos, transactions will log to a secure temporary cloud queue and sync automatically once internet connectivity restores, ensuring zero dropped payments.
 
 
 
-Authors & Collaborators
-Lead Systems Architect: Chijioke C Odoh — Developed the hybrid network strategy, local container stack, and handled complete deployment execution.
+## Authors & Collaborators
+Lead cloud engineer: Chijioke C Odoh 
+ Developed the hybrid network strategy, local container stack, and handled complete deployment execution.
 
 
 Co-Author & AI Infrastructure Consultant: Gemini (Google AI) — Assisted with system architecture refinement, debugging deployment configurations, and compliance optimization.
