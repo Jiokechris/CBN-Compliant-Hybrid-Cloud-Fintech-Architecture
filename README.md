@@ -1,3 +1,61 @@
+# 🇳🇬 CBN-Compliant Hybrid Cloud Fintech Architecture (Version 2.0.0)
+
+A production-grade, highly resilient hybrid cloud data pipeline engineered to enforce absolute national data residency compliance. This architecture isolates core financial transaction ledgers from foreign cloud nodes, strictly satisfying the Central Bank of Nigeria (CBN) guidelines and the Nigeria Data Protection Regulation (NDPR).
+
+## 📊 Infrastructure Evolution: V1.0 vs V2.0
+
+* **Version 1.0 (Proof of Concept):** Utilized public reverse-proxy tunneling (Pinggy) to pipe basic webhooks to a local machine. This served as a validation model but introduced third-party routing dependencies, public internet exposure, and lack of protocol-level encryption control.
+* **Version 2.0 (Production Hardening):** Eliminated all third-party reverse proxies. Established a direct, kernel-level, point-to-point **WireGuard VPN Tunnel** using private IP routing blocks (`10.0.0.0/24`). Introduced an isolated **Mobile App Client Simulation** on the cloud edge and a real-time **Admin Control Tower Dashboard** with a sub-2-second monitoring loop.
+
+## 🏗️ Architectural Topology
+
+The system completely decouples the public application plane from the sovereign data residency vault, routing sensitive financial payloads inside an isolated private network plane.
+
+
+────────────────────────────────────────────────────────────────────────┐
+ │                      AWS EC2 PUBLIC EDGE SUBNET                        │
+ │                                                                        │
+ │  ┌─────────────────────────┐               ┌────────────────────────┐  │
+ │  │   Mobile Client UI      │ ──[HTTP POST]─> │   Core Express Engine  │  │
+ │  │   (Simulated App Layer) │               │   (Port 3000 Routing)  │  │
+ │  └─────────────────────────┘               └────────────────────────┘  │
+ └─────────────────────────────────────────────────┬──────────────────────┘
+                                                   │
+                                      [ SECURE TRANSIT PLANE ]
+                                   WireGuard Tunnel Interface (wg0)
+                                      Encrypted Private Subnet 
+                                           10.0.0.1 ──> 10.0.0.2
+                                                   │
+                                                   ▼
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                    ON-PREMISE SOVEREIGN RESIDENCY VAULT                │
+ │                                                                        │
+ │  ┌─────────────────────────┐               ┌────────────────────────┐  │
+ │  │  Admin Control Tower    │               │  Docker Core Container │  │
+ │  │  (Real-Time Dashboard)  │ <──[2s Loop]── │  PostgreSQL Ledger     │  │
+ │  └─────────────────────────┘               └────────────────────────┘  │
+ └────────────────────────────────────────────────────────────────────────┘
+
+
+## 🛠️ Core Engineering Implementations in V2.0
+
+### 1. Enterprise VPN Migration (Pinggy ──> WireGuard)
+* **The Upgrade:** Replaced public-facing third-party HTTP tunnels with a custom-configured WireGuard peer-to-peer network interface. 
+* **The Security Impact:** All financial records skip public routing tables entirely. Payload transit is locked down using modern cryptography (ChaCha20 and Poly1305), directly binding the AWS EC2 instance (`10.0.0.1`) to the local infrastructure core (`10.0.0.2`).
+
+### 2. Full-Stack Ecosystem Expansion (Mobile Client & Admin Tower)
+* **The Upgrade:** Developed a dual-interface testing array on the cloud edge:
+  * **Client Side:** A mobile transaction generator simulating live user card/account fund transfers.
+  * **Admin Side:** A low-latency telemetry board querying aggregate metrics (`COUNT`, `SUM`) and displaying the last 10 local cryptographic ledger records sequentially.
+
+### 3. Asynchronous Query Parallelism (Sub-2-Second Heartbeat)
+* **The Problem:** Sequential blocking queries over the network bridge caused cumulative latency overhead, causing dashboard data drift.
+* **The Optimization:** Implemented parallelized connection-pooled queries using JavaScript `Promise.all()`. This dropped the network processing window down to an optimized ~1.8-second automated refresh loop.
+
+### 4. Database Schema Hardening & OS Socket Pruning
+* **The Upgrade:** Aligned frontend data-binding structures to map strictly with unique relational constraints (`tx_ref`, `processed_at`) inside the local PostgreSQL container. Additionally, automated script-level port reclamation (`lsof -t -i:3000`) was introduced to cleanly flush zombie network sockets during hot-reloads on AWS.
+
+
 # CBN-Compliant Hybrid Cloud Fintech Architecture
 
 This repository contains a production-grade prototype demonstrating how financial technology companies can comply with the Central Bank of Nigeria's (CBN) data residency directives. 
