@@ -12,6 +12,8 @@ A production-grade, highly resilient hybrid cloud data pipeline engineered to en
 The system completely decouples the public application plane from the sovereign data residency vault, routing sensitive financial payloads inside an isolated private network plane.
 
 
+
+
 ────────────────────────────────────────────────────────────────────────┐
  │                      AWS EC2 PUBLIC EDGE SUBNET                        │
  │                                                                        │
@@ -37,6 +39,7 @@ The system completely decouples the public application plane from the sovereign 
  └────────────────────────────────────────────────────────────────────────┘
 
 
+
 ## 🛠️ Core Engineering Implementations in V2.0
 
 ### 1. Enterprise VPN Migration (Pinggy ──> WireGuard)
@@ -56,7 +59,7 @@ The system completely decouples the public application plane from the sovereign 
 * **The Upgrade:** Aligned frontend data-binding structures to map strictly with unique relational constraints (`tx_ref`, `processed_at`) inside the local PostgreSQL container. Additionally, automated script-level port reclamation (`lsof -t -i:3000`) was introduced to cleanly flush zombie network sockets during hot-reloads on AWS.
 
 
-# CBN-Compliant Hybrid Cloud Fintech Architecture
+# CBN-Compliant Hybrid Cloud Fintech Architecture (V 1.0)
 
 This repository contains a production-grade prototype demonstrating how financial technology companies can comply with the Central Bank of Nigeria's (CBN) data residency directives. 
 
